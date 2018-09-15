@@ -23,7 +23,7 @@ public class BackyardPicReceivedConfig extends Config {
     private static final String HOURS = "CRAZYBACKYARD_TWITTER_HOURS";
 
     private static final Pattern HOURS_PATTERN = Pattern.compile("(\\d\\d:\\d\\d)-(\\d\\d:\\d\\d)");
-    public static final String EUROPE_BERLIN = "Europe/Berlin";
+    private static final String EUROPE_BERLIN = "Europe/Berlin";
 
 
     private BackyardPicReceivedConfig(List<SystemProperty> properties) {
