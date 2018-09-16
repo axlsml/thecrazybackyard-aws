@@ -1,5 +1,7 @@
 package com.bockig.crazybackyard.model;
 
+import com.amazonaws.services.s3.model.ObjectMetadata;
+
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -24,5 +26,11 @@ public class MetaData {
         }
         ZonedDateTime time = ZonedDateTime.ofInstant(Instant.ofEpochSecond(Long.valueOf(utc)), ZoneId.of("Europe/Berlin"));
         return String.format("Gotcha buddy! (%s) #trailcam", time.format(TIME_FORMAT));
+    }
+
+    public static ObjectMetadata create(Map<String, String> meta) {
+        ObjectMetadata metaData = new ObjectMetadata();
+        meta.forEach(metaData::addUserMetadata);
+        return metaData;
     }
 }
