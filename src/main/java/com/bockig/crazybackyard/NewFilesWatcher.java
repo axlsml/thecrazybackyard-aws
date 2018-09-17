@@ -1,6 +1,7 @@
 package com.bockig.crazybackyard;
 
 
+import com.bockig.crazybackyard.model.S3FileUploader;
 import com.bockig.crazybackyard.model.WatchFilesProducer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,7 +14,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
 
-class NewFilesWatcher {
+public class NewFilesWatcher {
 
     private static final Logger LOG = LogManager.getLogger(NewFilesWatcher.class);
     private static final int MAX_MINUTES = 2;
@@ -25,6 +26,15 @@ class NewFilesWatcher {
     NewFilesWatcher(String directoy, Consumer<Path> fileConsumer) {
         this.directoy = directoy;
         this.fileConsumer = fileConsumer;
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+        LOG.info("start watching for files ...");
+        if (args.length < 2) {
+            throw new IllegalArgumentException("invalid arguments! pls supply <localdirectory> and <bucket>");
+        }
+        NewFilesWatcher watcher = new NewFilesWatcher(args[0], new S3FileUploader(args[1]));
+        watcher.startWatching();
     }
 
     void startWatching() throws InterruptedException {

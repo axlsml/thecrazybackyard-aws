@@ -12,7 +12,7 @@ public class NewFilesWatcherTest {
     @Test
     @Ignore
     public void nameTest() throws Exception {
-        Consumer<Path> x = new S3FileUploader();
+        Consumer<Path> x = new S3FileUploader("axl-sml");
         NewFilesWatcher watcher = new NewFilesWatcher("D:\\tmp\\crazy", x);
         watcher.startWatching();
     }

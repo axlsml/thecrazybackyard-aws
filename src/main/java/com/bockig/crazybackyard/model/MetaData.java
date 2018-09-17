@@ -21,11 +21,11 @@ public class MetaData {
 
     public static String buildStatusText(Map<String, String> userMetadata) throws Exception {
         String utc = userMetadata.get(UTC);
-        if (utc == null) {
-            throw new Exception("missing metadata! not posting tweet " + userMetadata);
+        if (utc != null) {
+            ZonedDateTime time = ZonedDateTime.ofInstant(Instant.ofEpochSecond(Long.valueOf(utc)), ZoneId.of("Europe/Berlin"));
+            return String.format("Gotcha buddy! (%s) #trailcam", time.format(TIME_FORMAT));
         }
-        ZonedDateTime time = ZonedDateTime.ofInstant(Instant.ofEpochSecond(Long.valueOf(utc)), ZoneId.of("Europe/Berlin"));
-        return String.format("Gotcha buddy! (%s) #trailcam", time.format(TIME_FORMAT));
+        return "Gotcha buddy! #trailcam";
     }
 
     public static ObjectMetadata create(Map<String, String> meta) {
