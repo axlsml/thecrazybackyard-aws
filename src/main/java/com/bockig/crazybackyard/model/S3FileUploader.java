@@ -1,7 +1,7 @@
 package com.bockig.crazybackyard.model;
 
 import com.amazonaws.AmazonServiceException;
-import com.amazonaws.auth.EnvironmentVariableCredentialsProvider;
+import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.ObjectMetadata;
@@ -11,24 +11,21 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public class PostFile implements Consumer<Path> {
+public class S3FileUploader implements Consumer<Path> {
 
-    private static final Logger LOG = LogManager.getLogger(PostFile.class);
+    private static final Logger LOG = LogManager.getLogger(S3FileUploader.class);
 
     @Override
     public void accept(Path path) {
-        String clientRegion = "eu-central-1";
         String bucketName = "axl-sml";
-//        String fileObjKeyName = "SYEW0038.JPG";
-//        String fileName = "D:\\downloads\\SYEW0038.JPG";
 
         try {
             AmazonS3 s3Client = AmazonS3ClientBuilder.standard()
-                    .withRegion(clientRegion)
-                    .withCredentials(new EnvironmentVariableCredentialsProvider())
+                    .withCredentials(new ProfileCredentialsProvider())
                     .build();
 
             File file = path.toFile();
@@ -48,6 +45,6 @@ public class PostFile implements Consumer<Path> {
 //        meta.put(MetaData.FROM, sender());
 //        meta.put(MetaData.SUBJECT, subject());
 //        return meta;
-        return null;
+        return new HashMap<>();
     }
 }

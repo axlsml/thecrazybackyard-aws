@@ -1,5 +1,6 @@
 package com.bockig.crazybackyard;
 
+import com.bockig.crazybackyard.model.S3FileUploader;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -11,7 +12,7 @@ public class NewFilesWatcherTest {
     @Test
     @Ignore
     public void nameTest() throws Exception {
-        Consumer<Path> x = System.out::println;
+        Consumer<Path> x = new S3FileUploader();
         NewFilesWatcher watcher = new NewFilesWatcher("D:\\tmp\\crazy", x);
         watcher.startWatching();
     }
