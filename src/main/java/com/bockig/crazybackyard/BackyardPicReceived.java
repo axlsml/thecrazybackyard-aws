@@ -16,8 +16,12 @@ public class BackyardPicReceived extends S3FileReceiver {
 
     @Override
     protected void receiveObject(S3Object object, AmazonS3 s3Client) {
-        LOG.info("going to tweet: {}", object.getKey());
         BackyardPicReceivedConfig config = BackyardPicReceivedConfig.load();
+        if (!config.isNowActive()) {
+            LOG.info("disabled now - skipping");
+            return;
+        }
+        LOG.info("going to tweet: {}", object.getKey());
         Twitter twitter = new TwitterFactory(config.twitterConfig()).getInstance();
 
         try (InputStream fis = object.getObjectContent()) {
