@@ -138,7 +138,7 @@ public class BackyardEmailReader {
 
     public Map<String, String> metaData() {
         Map<String, String> meta = new HashMap<>();
-        meta.put(MetaData.UTC, String.valueOf(timestamp().flatMap(t -> Optional.of(t.toEpochSecond())).orElse(0L)));
+        meta.put(MetaData.UTC, String.valueOf(timestamp().flatMap(t -> Optional.of(t.toInstant().toEpochMilli())).orElse(0L)));
         meta.put(MetaData.FROM, sender());
         meta.put(MetaData.SUBJECT, subject());
         return meta;

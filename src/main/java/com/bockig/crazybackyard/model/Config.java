@@ -4,6 +4,8 @@ import java.util.List;
 
 public abstract class Config {
 
+    protected static final String HOURS = "CRAZYBACKYARD_ACTIVE_HOURS";
+
     private List<SystemProperty> properties;
 
     public Config(List<SystemProperty> properties) {

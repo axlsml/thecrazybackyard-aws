@@ -29,11 +29,8 @@ public class NewFilesWatcher {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        LOG.info("start watching for files ...");
-        if (args.length < 2) {
-            throw new IllegalArgumentException("invalid arguments! pls supply <localdirectory> and <bucket>");
-        }
-        NewFilesWatcher watcher = new NewFilesWatcher(args[0], new S3FileUploader(args[1]));
+        NewFilesWatcherConfig config = NewFilesWatcherConfig.load();
+        NewFilesWatcher watcher = new NewFilesWatcher(config.watchDirectory(), new S3FileUploader(config.getTargetBucket(), config.getHours()));
         watcher.startWatching();
     }
 
