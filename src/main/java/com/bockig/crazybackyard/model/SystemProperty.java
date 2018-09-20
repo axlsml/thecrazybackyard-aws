@@ -1,9 +1,14 @@
 package com.bockig.crazybackyard.model;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class SystemProperty {
+
+    private static final Logger LOG = LogManager.getLogger(SystemProperty.class);
 
     private String key;
     private String value;
@@ -23,7 +28,9 @@ public class SystemProperty {
 
     void failIfMissing() {
         if (value == null) {
-            throw new RuntimeException("missing variable: " + key);
+            String msg = "missing variable: " + key;
+            LOG.error(msg);
+            throw new RuntimeException(msg);
         }
     }
 

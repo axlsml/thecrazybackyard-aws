@@ -29,6 +29,7 @@ public class NewFilesWatcher {
     }
 
     public static void main(String[] args) throws InterruptedException {
+        LOG.info("start watching for files ...");
         NewFilesWatcherConfig config = NewFilesWatcherConfig.load();
         NewFilesWatcher watcher = new NewFilesWatcher(config.watchDirectory(), new S3FileUploader(config.getTargetBucket(), config.getHours()));
         watcher.startWatching();
