@@ -17,25 +17,25 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class BackyardEmailReader {
+public class EmailReader {
 
-    private static final Logger LOG = LogManager.getLogger(BackyardEmailReader.class);
+    private static final Logger LOG = LogManager.getLogger(EmailReader.class);
 
     private static final String MULTIPART_MIXED = "multipart/mixed";
     private static final String MULTIPART_ALTERNATIVE = "multipart/alternative";
 
     private MimeMessageParser message;
 
-    private BackyardEmailReader(MimeMessageParser message) {
+    private EmailReader(MimeMessageParser message) {
         this.message = message;
     }
 
-    public static Optional<BackyardEmailReader> create(InputStream source) {
+    public static Optional<EmailReader> create(InputStream source) {
         Properties props = new Properties();
         Session mailSession = Session.getDefaultInstance(props, null);
         try {
             MimeMessage message = new MimeMessage(mailSession, source);
-            return Optional.of(new BackyardEmailReader(new MimeMessageParser(message)));
+            return Optional.of(new EmailReader(new MimeMessageParser(message)));
         } catch (MessagingException e) {
             LOG.error("cant create reader", e);
         }

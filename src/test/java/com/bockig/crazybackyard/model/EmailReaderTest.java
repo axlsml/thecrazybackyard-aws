@@ -10,15 +10,15 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
-public class BackyardEmailReaderTest {
+public class EmailReaderTest {
 
     @Test
     public void test() throws Exception {
         try (InputStream source = new FileInputStream("src/test/resources/mime/email-without-attachment")) {
-            Optional<BackyardEmailReader> reader = BackyardEmailReader.create(source);
+            Optional<EmailReader> reader = EmailReader.create(source);
             ZonedDateTime timestamp = ZonedDateTime.of(2018, 9, 4, 23, 1, 0, 0, ZoneId.of("Europe/Berlin"));
             Assert.assertTrue(reader.isPresent());
-            BackyardEmailReader readerObj = reader.get();
+            EmailReader readerObj = reader.get();
 
             Assert.assertEquals("axel@fake.com", readerObj.sender());
             Assert.assertEquals("test e-mail", readerObj.subject());
@@ -30,11 +30,11 @@ public class BackyardEmailReaderTest {
     @Test
     public void testAttachment() throws Exception {
         try (InputStream source = new FileInputStream("src/test/resources/mime/email-with-attachment")) {
-            Optional<BackyardEmailReader> reader = BackyardEmailReader.create(source);
+            Optional<EmailReader> reader = EmailReader.create(source);
             ZonedDateTime timestamp = ZonedDateTime.of(2018, 9, 2, 14, 8, 18, 0, ZoneId.of("Europe/Berlin"));
 
             Assert.assertTrue(reader.isPresent());
-            BackyardEmailReader readerObj = reader.get();
+            EmailReader readerObj = reader.get();
 
             Assert.assertEquals("lappen@fake.com", readerObj.sender());
             Assert.assertEquals("Fwd: 4849-SYEW0124.JPG", readerObj.subject());
@@ -48,10 +48,10 @@ public class BackyardEmailReaderTest {
     @Test
     public void testAttachmentReal() throws Exception {
         try (InputStream source = new FileInputStream("src/test/resources/mime/q6k3f98015ka9d24kalp1ffi8mifrnfr4d2tfq81")) {
-            Optional<BackyardEmailReader> reader = BackyardEmailReader.create(source);
+            Optional<EmailReader> reader = EmailReader.create(source);
             ZonedDateTime timestamp = ZonedDateTime.of(2018, 9, 6, 19, 29, 46, 0, ZoneId.of("Europe/Berlin"));
             Assert.assertTrue(reader.isPresent());
-            BackyardEmailReader readerObj = reader.get();
+            EmailReader readerObj = reader.get();
 
             Assert.assertEquals("sender@wildcam.com", readerObj.sender());
             Assert.assertEquals("4849-SYEW0144.JPG", readerObj.subject());
