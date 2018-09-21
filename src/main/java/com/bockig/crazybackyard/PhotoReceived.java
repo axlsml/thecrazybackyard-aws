@@ -3,6 +3,7 @@ package com.bockig.crazybackyard;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.S3Object;
 import com.bockig.crazybackyard.model.MetaData;
+import com.bockig.crazybackyard.model.S3FileReceivedHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import twitter4j.*;
@@ -11,12 +12,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
-public class PhotoReceived extends S3FileReceiver {
+public class PhotoReceived implements S3FileReceivedHandler {
 
     private static final Logger LOG = LogManager.getLogger(PhotoReceived.class);
 
     @Override
-    protected void receiveObject(S3Object object, AmazonS3 s3Client) {
+    public void receiveObject(S3Object object, AmazonS3 s3Client) {
         LOG.info("going to tweet: {}", object.getKey());
 
         PhotoReceivedConfig config = PhotoReceivedConfig.load();
@@ -32,12 +33,10 @@ public class PhotoReceived extends S3FileReceiver {
             LOG.error("cannot get s3 content", e);
         } catch (TwitterException e) {
             LOG.error("twitter api error", e);
-        } catch (Exception e) {
-            LOG.error("something went wrong :(", e);
         }
     }
 
-    static boolean shouldPostNow(PhotoReceivedConfig globalConfig, Map<String, String> userMetadata) {
+    private static boolean shouldPostNow(PhotoReceivedConfig globalConfig, Map<String, String> userMetadata) {
         if (!globalConfig.isEnabled()) {
             LOG.info("disabled now (global config) - skipping");
             return false;

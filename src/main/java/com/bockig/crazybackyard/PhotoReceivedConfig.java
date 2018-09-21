@@ -1,7 +1,7 @@
 package com.bockig.crazybackyard;
 
 import com.bockig.crazybackyard.model.Config;
-import com.bockig.crazybackyard.model.SystemProperty;
+import com.bockig.crazybackyard.model.ApplicationProperty;
 import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
 
@@ -16,13 +16,13 @@ public class PhotoReceivedConfig extends Config {
     private static final String ACCESS_SECRET = "CRAZYBACKYARD_TWITTER_ACCESS_SECRET";
     private static final String ENABLED = "CRAZYBACKYARD_TWITTER_ENABLED";
 
-    private PhotoReceivedConfig(List<SystemProperty> properties) {
+    private PhotoReceivedConfig(List<ApplicationProperty> properties) {
         super(properties);
     }
 
     static PhotoReceivedConfig load() {
         return new PhotoReceivedConfig(new ArrayList<>(
-                SystemProperty.create(System::getenv, CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_SECRET, ENABLED)));
+                ApplicationProperty.create(System::getenv, CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_SECRET, ENABLED)));
     }
 
     Configuration twitterConfig() {

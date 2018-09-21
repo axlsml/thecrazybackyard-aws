@@ -8,7 +8,6 @@ import javax.mail.BodyPart;
 import javax.mail.MessagingException;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
@@ -56,7 +55,7 @@ class EmailText {
         Matcher matcher = TAKEN_ON_TEXT.matcher(StringUtils.trim(text));
         if (matcher.find()) {
             String dateStr = matcher.group(1);
-            ZonedDateTime timestamp = ZonedDateTime.of(LocalDateTime.parse(dateStr, DATE_FORMAT), ZoneId.of("Europe/Berlin"));
+            ZonedDateTime timestamp = ZonedDateTime.of(LocalDateTime.parse(dateStr, DATE_FORMAT), Hours.DEFAULT_ZONE);
             return Optional.of(timestamp);
         }
         return Optional.empty();

@@ -1,7 +1,7 @@
 package com.bockig.crazybackyard;
 
 import com.bockig.crazybackyard.model.Config;
-import com.bockig.crazybackyard.model.SystemProperty;
+import com.bockig.crazybackyard.model.ApplicationProperty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,12 +10,12 @@ class EmailReceivedConfig extends Config {
 
     private static final String TARGET_BUCKET = "CRAZYBACKYARD_S3_TARGET_BUCKET";
 
-    EmailReceivedConfig(List<SystemProperty> properties) {
+    EmailReceivedConfig(List<ApplicationProperty> properties) {
         super(properties);
     }
 
     static EmailReceivedConfig load() {
-        return new EmailReceivedConfig(new ArrayList<>(SystemProperty.create(System::getenv, TARGET_BUCKET)));
+        return new EmailReceivedConfig(new ArrayList<>(ApplicationProperty.create(System::getenv, TARGET_BUCKET)));
     }
 
     String getTargetBucket() {

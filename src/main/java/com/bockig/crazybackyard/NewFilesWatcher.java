@@ -28,14 +28,14 @@ public class NewFilesWatcher {
         this.fileConsumer = fileConsumer;
     }
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         LOG.info("start watching for files ...");
         NewFilesWatcherConfig config = NewFilesWatcherConfig.load();
         NewFilesWatcher watcher = new NewFilesWatcher(config.watchDirectory(), new S3FileUploader(config.getTargetBucket(), config.getHours()));
         watcher.startWatching();
     }
 
-    void startWatching() throws InterruptedException {
+    void startWatching() {
         new Thread(new WatchFilesProducer(queue, directoy)).start();
 
         try {

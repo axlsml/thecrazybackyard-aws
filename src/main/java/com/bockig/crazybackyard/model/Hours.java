@@ -8,7 +8,7 @@ import java.time.ZoneId;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Hours {
+class Hours {
 
     private static final Pattern HOURS_PATTERN = Pattern.compile("(\\d\\d:\\d\\d)-(\\d\\d:\\d\\d)");
 
@@ -34,7 +34,7 @@ public class Hours {
         }
     }
 
-    public static boolean checkActive(String hoursString) {
+    static boolean checkActive(String hoursString) {
         return checkActive(Clock.system(DEFAULT_ZONE), hoursString);
     }
 }

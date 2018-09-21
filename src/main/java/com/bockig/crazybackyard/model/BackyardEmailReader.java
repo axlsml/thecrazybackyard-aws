@@ -76,7 +76,7 @@ public class BackyardEmailReader {
         return new ArrayList<>();
     }
 
-    List<EmailText> texts() {
+    private List<EmailText> texts() {
         try {
             String contentType = message.getMimeMessage().getContentType();
             if (contentType.startsWith(MULTIPART_MIXED) || contentType.startsWith(MULTIPART_ALTERNATIVE)) {
@@ -119,7 +119,7 @@ public class BackyardEmailReader {
             String[] date = message.getMimeMessage().getHeader("Date");
             ZonedDateTime timestamp = null;
             if (date.length > 0) {
-                timestamp = ZonedDateTime.parse(date[0].replaceAll("  ", ""), DateTimeFormatter.RFC_1123_DATE_TIME);
+                timestamp = ZonedDateTime.parse(date[0].replaceAll(" {2}", ""), DateTimeFormatter.RFC_1123_DATE_TIME);
             }
             return Optional.ofNullable(timestamp);
         } catch (MessagingException e) {

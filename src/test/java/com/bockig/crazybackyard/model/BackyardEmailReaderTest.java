@@ -1,7 +1,5 @@
 package com.bockig.crazybackyard.model;
 
-import com.bockig.crazybackyard.model.BackyardEmailReader;
-import com.bockig.crazybackyard.model.Image;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -19,7 +19,7 @@ public class MetaData {
     private MetaData() {
     }
 
-    public static String buildStatusText(Map<String, String> userMetadata) throws Exception {
+    public static String buildStatusText(Map<String, String> userMetadata) {
         String utc = userMetadata.get(UTC);
         if (utc != null) {
             ZonedDateTime time = ZonedDateTime.ofInstant(Instant.ofEpochMilli(Long.valueOf(utc)), Hours.DEFAULT_ZONE);

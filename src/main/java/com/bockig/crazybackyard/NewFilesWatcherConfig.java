@@ -1,7 +1,7 @@
 package com.bockig.crazybackyard;
 
 import com.bockig.crazybackyard.model.Config;
-import com.bockig.crazybackyard.model.SystemProperty;
+import com.bockig.crazybackyard.model.ApplicationProperty;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,12 +20,12 @@ class NewFilesWatcherConfig extends Config {
     private static final String TARGET_BUCKET = "CRAZYBACKYARD_S3_TARGET_BUCKET";
     private static final String WATCH_DIRECTORY = "CRAZYBACKYARD_WATCH_DIRECTORY";
 
-    NewFilesWatcherConfig(List<SystemProperty> properties) {
+    NewFilesWatcherConfig(List<ApplicationProperty> properties) {
         super(properties);
     }
 
     static NewFilesWatcherConfig load() {
-        return new NewFilesWatcherConfig(new ArrayList<>(SystemProperty.create(loadProperties()::getProperty, TARGET_BUCKET, WATCH_DIRECTORY, HOURS)));
+        return new NewFilesWatcherConfig(new ArrayList<>(ApplicationProperty.create(loadProperties()::getProperty, TARGET_BUCKET, WATCH_DIRECTORY, HOURS)));
     }
 
     private static Properties loadProperties() {

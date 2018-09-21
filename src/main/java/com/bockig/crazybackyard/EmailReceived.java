@@ -5,6 +5,7 @@ import com.amazonaws.services.s3.model.S3Object;
 import com.bockig.crazybackyard.model.BackyardEmailReader;
 import com.bockig.crazybackyard.model.Image;
 import com.bockig.crazybackyard.model.MetaData;
+import com.bockig.crazybackyard.model.S3FileReceivedHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -13,12 +14,12 @@ import java.io.InputStream;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-public class EmailReceived extends S3FileReceiver {
+public class EmailReceived implements S3FileReceivedHandler {
 
     private static final Logger LOG = LogManager.getLogger(EmailReceived.class);
 
     @Override
-    protected void receiveObject(S3Object object, AmazonS3 s3Client) throws Exception {
+    public void receiveObject(S3Object object, AmazonS3 s3Client) throws Exception {
         EmailReceivedConfig config = EmailReceivedConfig.load();
         Optional<BackyardEmailReader> reader = BackyardEmailReader.create(object.getObjectContent());
         if (reader.isPresent()) {
