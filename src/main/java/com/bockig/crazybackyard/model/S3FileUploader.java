@@ -36,6 +36,7 @@ public class S3FileUploader implements Consumer<Path> {
                     .build();
             PutObjectRequest request = new PutObjectRequest(bucketName, file.getName(), fis, MetaData.buildHours(hours));
             s3Client.putObject(request);
+            LOG.info("succssfully uploaded {}", file.getName());
         } catch (AmazonServiceException e) {
             LOG.error("couldnt write to s3", e);
         } catch (IOException e) {

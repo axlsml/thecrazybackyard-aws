@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 public class SystemProperty {
 
@@ -18,10 +19,10 @@ public class SystemProperty {
         this.value = value;
     }
 
-    public static List<SystemProperty> create(String... keys) {
+    public static List<SystemProperty> create(Function<String, String> retrieveKey, String... keys) {
         List<SystemProperty> properties = new ArrayList<>();
         for (String key : keys) {
-            properties.add(new SystemProperty(key, System.getenv(key)));
+            properties.add(new SystemProperty(key, retrieveKey.apply(key)));
         }
         return properties;
     }

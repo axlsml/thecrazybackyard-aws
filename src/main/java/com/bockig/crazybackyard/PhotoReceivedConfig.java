@@ -22,7 +22,7 @@ public class PhotoReceivedConfig extends Config {
 
     static PhotoReceivedConfig load() {
         return new PhotoReceivedConfig(new ArrayList<>(
-                SystemProperty.create(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_SECRET, ENABLED)));
+                SystemProperty.create(System::getenv, CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_SECRET, ENABLED)));
     }
 
     Configuration twitterConfig() {

@@ -15,7 +15,7 @@ class EmailReceivedConfig extends Config {
     }
 
     static EmailReceivedConfig load() {
-        return new EmailReceivedConfig(new ArrayList<>(SystemProperty.create(TARGET_BUCKET)));
+        return new EmailReceivedConfig(new ArrayList<>(SystemProperty.create(System::getenv, TARGET_BUCKET)));
     }
 
     String getTargetBucket() {
