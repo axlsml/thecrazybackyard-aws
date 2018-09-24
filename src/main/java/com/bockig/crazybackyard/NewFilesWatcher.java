@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.ZonedDateTime;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
 
@@ -36,7 +37,7 @@ public class NewFilesWatcher {
     }
 
     void startWatching() {
-        new Thread(new WatchFilesProducer(queue, directoy)).start();
+        CompletableFuture.supplyAsync(new WatchFilesProducer(queue, directoy));
 
         try {
             receiveNewFiles();

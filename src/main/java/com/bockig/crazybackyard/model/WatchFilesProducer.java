@@ -5,11 +5,13 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.nio.file.*;
+import java.util.Optional;
 import java.util.concurrent.BlockingQueue;
+import java.util.function.Supplier;
 
 import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
 
-public class WatchFilesProducer implements Runnable {
+public class WatchFilesProducer implements Supplier<Optional<Void>> {
 
     private static final Logger LOG = LogManager.getLogger(WatchFilesProducer.class);
 
@@ -21,7 +23,7 @@ public class WatchFilesProducer implements Runnable {
         this.directory = directory;
     }
 
-    public void run() {
+    public Optional<Void> get() {
         try {
             WatchService watcher = FileSystems.getDefault().newWatchService();
             Path dir = Paths.get(directory);
@@ -39,6 +41,7 @@ public class WatchFilesProducer implements Runnable {
         } catch (IOException | InterruptedException e) {
             LOG.error("error watching files?!", e);
         }
+        return Optional.empty();
     }
 
 }
