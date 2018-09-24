@@ -1,4 +1,4 @@
-package com.bockig.crazybackyard;
+package com.bockig.crazybackyard.model;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
@@ -7,15 +7,14 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.event.S3EventNotification;
 import com.amazonaws.services.s3.model.S3Object;
-import com.bockig.crazybackyard.model.S3Util;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public abstract class S3FileReceiver implements RequestHandler<S3Event, String> {
+public interface S3FileReceivedHandler extends RequestHandler<S3Event, String> {
 
-    private static final Logger LOG = LogManager.getLogger(S3FileReceiver.class);
+    Logger LOG = LogManager.getLogger(S3FileReceivedHandler.class);
 
-    public String handleRequest(S3Event s3event, Context context) {
+    default String handleRequest(S3Event s3event, Context context) {
         S3Util.logRecords(s3event.getRecords());
         S3EventNotification.S3EventNotificationRecord record = s3event.getRecords().get(0);
 
@@ -31,6 +30,6 @@ public abstract class S3FileReceiver implements RequestHandler<S3Event, String> 
         return "error";
     }
 
-    protected abstract void receiveObject(S3Object object, AmazonS3 s3Client) throws Exception;
+    void receiveObject(S3Object object, AmazonS3 s3Client) throws Exception;
 
 }

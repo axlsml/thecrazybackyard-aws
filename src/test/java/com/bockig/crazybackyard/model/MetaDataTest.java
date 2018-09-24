@@ -13,12 +13,12 @@ public class MetaDataTest {
 
     @Before
     public void setUp() {
-        this.complete.put(MetaData.UTC, "1536660625");
+        this.complete.put(MetaData.UTC, "1536660625500");
     }
 
     @Test
-    public void testNormal() throws Exception {
-        Assert.assertEquals("Gotcha buddy! (12:10 PM) #trailcam", MetaData.buildStatusText(complete));
-        Assert.assertEquals("Gotcha buddy! #trailcam", MetaData.buildStatusText(new HashMap<>()));
+    public void testNormal() {
+        Assert.assertEquals("Hey buddy! (12:10:25 PM) #trailcam", MetaData.buildStatusText(complete));
+        Assert.assertEquals("Hey buddy! #trailcam", MetaData.buildStatusText(new HashMap<>()));
     }
 }

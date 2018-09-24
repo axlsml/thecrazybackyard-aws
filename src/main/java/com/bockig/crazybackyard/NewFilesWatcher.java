@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.ZonedDateTime;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
 
@@ -28,17 +29,15 @@ public class NewFilesWatcher {
         this.fileConsumer = fileConsumer;
     }
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         LOG.info("start watching for files ...");
-        if (args.length < 2) {
-            throw new IllegalArgumentException("invalid arguments! pls supply <localdirectory> and <bucket>");
-        }
-        NewFilesWatcher watcher = new NewFilesWatcher(args[0], new S3FileUploader(args[1]));
+        NewFilesWatcherConfig config = NewFilesWatcherConfig.load();
+        NewFilesWatcher watcher = new NewFilesWatcher(config.watchDirectory(), new S3FileUploader(config.getTargetBucket(), config.getHours()));
         watcher.startWatching();
     }
 
-    void startWatching() throws InterruptedException {
-        new Thread(new WatchFilesProducer(queue, directoy)).start();
+    void startWatching() {
+        CompletableFuture.supplyAsync(new WatchFilesProducer(queue, directoy));
 
         try {
             receiveNewFiles();

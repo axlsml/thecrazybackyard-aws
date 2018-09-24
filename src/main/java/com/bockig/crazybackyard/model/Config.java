@@ -4,15 +4,17 @@ import java.util.List;
 
 public abstract class Config {
 
-    private List<SystemProperty> properties;
+    protected static final String HOURS = "CRAZYBACKYARD_ACTIVE_HOURS";
 
-    public Config(List<SystemProperty> properties) {
+    private List<ApplicationProperty> properties;
+
+    public Config(List<ApplicationProperty> properties) {
         this.properties = properties;
         failIfIncomplete();
     }
 
     private void failIfIncomplete() {
-        properties.forEach(SystemProperty::failIfMissing);
+        properties.forEach(ApplicationProperty::failIfMissing);
     }
 
     protected String propertyValue(String key) {

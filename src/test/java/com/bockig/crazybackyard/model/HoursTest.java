@@ -1,12 +1,12 @@
-package com.bockig.crazybackyard;
+package com.bockig.crazybackyard.model;
 
 import org.junit.Test;
 
 import java.time.*;
 
-import static com.bockig.crazybackyard.BackyardPicReceivedConfig.checkActive;
+import static com.bockig.crazybackyard.model.Hours.checkActive;
 
-public class BackyardPicReceivedConfigTest {
+public class HoursTest {
 
     private static final String morning = "07:00-12:00";
     private static final String atNight = "23:00-07:00";
