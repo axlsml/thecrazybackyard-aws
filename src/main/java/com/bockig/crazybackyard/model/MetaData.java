@@ -28,8 +28,8 @@ public class MetaData {
         return "Hey buddy! #trailcam";
     }
 
-    public static ObjectMetadata create(Map<String, String> meta) {
-        ObjectMetadata metaData = new ObjectMetadata();
+    public static ObjectMetadata create(Map<String, String> meta, String hours) {
+        ObjectMetadata metaData = buildHours(hours);
         meta.forEach(metaData::addUserMetadata);
         return metaData;
     }

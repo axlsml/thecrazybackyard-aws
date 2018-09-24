@@ -32,7 +32,7 @@ public class EmailReceived implements S3FileReceivedHandler {
 
     private void putImage(Image image, EmailReader email, AmazonS3 client, EmailReceivedConfig config) {
         try (InputStream is = image.inputStream()) {
-            client.putObject(config.getTargetBucket(), image.getFilename(), is, MetaData.create(email.metaData()));
+            client.putObject(config.getTargetBucket(), image.getFilename(), is, MetaData.create(email.metaData(), config.getHours()));
         } catch (IOException e) {
             LOG.error("cannot write image {}", image.getFilename(), e);
         }
