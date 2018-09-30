@@ -6,18 +6,10 @@
                 <pattern>%d{yyyy-MM-dd HH:mm:ss} %X{AWSRequestId} %-5p %c{1}:%L - %m%n</pattern>
             </PatternLayout>
         </Lambda>
-        <RollingFile name="RollingFile" fileName="tcb.log" filePattern="tcb-%d{MM-dd-yyyy}.log.gz"
-                     ignoreExceptions="false">
-            <PatternLayout>
-                <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
-            </PatternLayout>
-            <SizeBasedTriggeringPolicy size="5 MB"/>
-        </RollingFile>
     </Appenders>
     <Loggers>
         <Root level="info">
             <AppenderRef ref="Lambda"/>
-            <AppenderRef ref="RollingFile"/>
         </Root>
     </Loggers>
 </Configuration>
