@@ -17,7 +17,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class EmailReader {
+public class EmailReader implements ImageProvider {
 
     private static final Logger LOG = LogManager.getLogger(EmailReader.class);
 
@@ -42,7 +42,7 @@ public class EmailReader {
         return Optional.empty();
     }
 
-    public String sender() {
+    String sender() {
         try {
             return message.getFrom();
         } catch (Exception e) {
@@ -51,7 +51,7 @@ public class EmailReader {
         }
     }
 
-    public String subject() {
+    String subject() {
         try {
             return message.getSubject();
         } catch (Exception e) {
@@ -60,9 +60,25 @@ public class EmailReader {
         }
     }
 
-    public List<Image> images() throws Exception {
-        String contentType = message.getMimeMessage().getContentType();
-        if (contentType.startsWith(MULTIPART_MIXED)) {
+    public List<Image> images() {
+        if (isMultipartContent()) {
+            return extractImages();
+        }
+        return Collections.emptyList();
+    }
+
+    private boolean isMultipartContent() {
+        try {
+            String contentType = message.getMimeMessage().getContentType();
+            return contentType.startsWith(MULTIPART_MIXED);
+        } catch (MessagingException e) {
+            LOG.error("cannot get content type", e);
+        }
+        return false;
+    }
+
+    private List<Image> extractImages() {
+        try {
             MimeMultipart mimeMultipart = (MimeMultipart) message.getMimeMessage().getContent();
             return IntStream.range(0, mimeMultipart.getCount())
                     .mapToObj(i -> bodyPart(i, mimeMultipart))
@@ -72,8 +88,10 @@ public class EmailReader {
                     .filter(Optional::isPresent)
                     .map(Optional::get)
                     .collect(Collectors.toList());
+        } catch (Exception e) {
+            LOG.error("cannot get multiparts", e);
         }
-        return new ArrayList<>();
+        return Collections.emptyList();
     }
 
     private List<EmailText> texts() {
