@@ -22,7 +22,7 @@ public class EmailReceived implements S3FileReceivedHandler {
 
     private void processEmail(EmailReader emailReader, AmazonS3 s3Client) {
         EmailReceivedConfig config = EmailReceivedConfig.load();
-        ObjectMetadata metaData = MetaData.create(emailReader.metaData());
+        ObjectMetadata metaData = MetaData.create(emailReader.metaData(), config.getHours());
 
         Consumer<Image> pushToBucket = new AmazonS3PushToBucket(s3Client, config.getTargetBucket(), metaData);
         new ImageSender(emailReader, pushToBucket).pushAll();
