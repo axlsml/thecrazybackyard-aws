@@ -14,7 +14,7 @@ public class EmailReceived implements S3FileReceivedHandler {
     public void receiveObject(S3Object object, AmazonS3 s3Client) {
         InputStream emailInputStream = object.getObjectContent();
 
-        Consumer<? super EmailReader> processEmail = emailReader -> processEmail(emailReader, s3Client);
+        Consumer<EmailReader> processEmail = emailReader -> processEmail(emailReader, s3Client);
         EmailReader
                 .create(emailInputStream)
                 .ifPresent(processEmail);
@@ -25,7 +25,7 @@ public class EmailReceived implements S3FileReceivedHandler {
         ObjectMetadata metaData = MetaData.create(emailReader.metaData(), config.getHours());
 
         Consumer<Image> pushToBucket = new AmazonS3PushToBucket(s3Client, config.getTargetBucket(), metaData);
-        new ImageSender(emailReader, pushToBucket).pushAll();
+        new ImageUploader(emailReader, pushToBucket).upload();
     }
 
 }
