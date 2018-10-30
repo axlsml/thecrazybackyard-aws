@@ -15,15 +15,15 @@ public class PhotoReceived implements S3FileReceivedHandler {
     private static final Logger LOG = LogManager.getLogger(PhotoReceived.class);
 
     @Override
-    public void receiveObject(S3Object object2, AmazonS3 s3Client) throws IOException, TwitterException {
+    public void receiveObject(S3Object object, AmazonS3 s3Client) throws IOException, TwitterException {
         PhotoReceivedConfig config = PhotoReceivedConfig.load();
-        Downloaded downloaded = download(object2);
+        Downloaded downloaded = download(object);
 
         if (postDisabledCurrently(config, downloaded.getMeta())) {
             return;
         }
 
-        new TheCrazyBackyardTweeter(config.twitterConfig()).post(downloaded);
+        new TheCrazyBackyardTweeter(config.twitterConfig(), downloaded).post();
     }
 
     private Downloaded download(S3Object object) {

@@ -1,5 +1,7 @@
 package com.bockig.crazybackyard.model;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -34,5 +36,9 @@ public class Downloaded {
                 ", bytes=" + Arrays.toString(bytes) +
                 ", meta=" + meta +
                 '}';
+    }
+
+    InputStream createInputStream() {
+        return new ByteArrayInputStream(bytes);
     }
 }
