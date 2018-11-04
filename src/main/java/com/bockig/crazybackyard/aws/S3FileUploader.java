@@ -1,10 +1,11 @@
-package com.bockig.crazybackyard.model;
+package com.bockig.crazybackyard.aws;
 
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.bockig.crazybackyard.model.MetaData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,7 +35,7 @@ public class S3FileUploader implements Consumer<Path> {
             AmazonS3 s3Client = AmazonS3ClientBuilder.standard()
                     .withCredentials(new ProfileCredentialsProvider())
                     .build();
-            PutObjectRequest request = new PutObjectRequest(bucketName, file.getName(), fis, MetaData.buildHours(hours));
+            PutObjectRequest request = new PutObjectRequest(bucketName, file.getName(), fis, S3Util.toObjectMetaData(MetaData.buildHours(hours)));
             s3Client.putObject(request);
             LOG.info("succssfully uploaded {}", file.getName());
         } catch (AmazonServiceException e) {

@@ -37,7 +37,7 @@ class EmailText {
         try {
             return Optional.of(new EmailText((String) bodyPart.getContent()));
         } catch (MessagingException | IOException e) {
-            LOG.error("cannot create text from BodyPart", e);
+            LOG.error("cannot createFromMime text from BodyPart", e);
         }
         return Optional.empty();
     }

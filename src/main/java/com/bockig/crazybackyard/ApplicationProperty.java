@@ -1,4 +1,4 @@
-package com.bockig.crazybackyard.model;
+package com.bockig.crazybackyard;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class ApplicationProperty {
+class ApplicationProperty {
 
     private static final Logger LOG = LogManager.getLogger(ApplicationProperty.class);
 
@@ -20,7 +20,7 @@ public class ApplicationProperty {
         this.value = value;
     }
 
-    public static List<ApplicationProperty> create(Function<String, String> retrieveKey, String... keys) {
+    static List<ApplicationProperty> create(Function<String, String> retrieveKey, String... keys) {
         return Arrays.stream(keys)
                 .map(key -> new ApplicationProperty(key, retrieveKey.apply(key)))
                 .collect(Collectors.toList());

@@ -1,4 +1,4 @@
-package com.bockig.crazybackyard.model;
+package com.bockig.crazybackyard.aws;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;

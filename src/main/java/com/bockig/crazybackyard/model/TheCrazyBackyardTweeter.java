@@ -13,24 +13,24 @@ public class TheCrazyBackyardTweeter {
     private static final Logger LOG = LogManager.getLogger(TheCrazyBackyardTweeter.class);
 
     private final Twitter twitter;
-    private final Downloaded downloaded;
+    private final FileWithMetaData fileWithMetaData;
 
-    public TheCrazyBackyardTweeter(Configuration configuration, Downloaded downloaded) {
+    public TheCrazyBackyardTweeter(Configuration configuration, FileWithMetaData fileWithMetaData) {
         this.twitter = new TwitterFactory(configuration).getInstance();
-        this.downloaded = downloaded;
+        this.fileWithMetaData = fileWithMetaData;
     }
 
     public void post() throws IOException, TwitterException {
-        try (InputStream is = downloaded.createInputStream()) {
+        try (InputStream is = fileWithMetaData.createInputStream()) {
             StatusUpdate update = createStatusUpdate(is);
             postStatusUpdate(update);
         }
     }
 
     private StatusUpdate createStatusUpdate(InputStream fis) {
-        String text = MetaData.buildStatusText(downloaded.getMeta());
+        String text = MetaData.buildStatusText(fileWithMetaData.getMeta());
         StatusUpdate status = new StatusUpdate(text);
-        status.setMedia(downloaded.getName(), fis);
+        status.setMedia(fileWithMetaData.getName(), fis);
         return status;
     }
 

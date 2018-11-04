@@ -1,8 +1,10 @@
-package com.bockig.crazybackyard.model;
+package com.bockig.crazybackyard.aws;
 
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.util.IOUtils;
 import com.bockig.crazybackyard.PhotoReceived;
+import com.bockig.crazybackyard.common.SimpleFile;
+import com.bockig.crazybackyard.model.FileWithMetaData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,18 +16,18 @@ public class AmazonS3Downloader {
 
     private static final Logger LOG = LogManager.getLogger(PhotoReceived.class);
 
-    private S3Object object;
+    private AmazonS3Downloader() {
 
-    public AmazonS3Downloader(S3Object object) {
-        this.object = object;
     }
 
-    public Downloaded download() {
+    public static FileWithMetaData download(S3Object object) {
         String key = object.getKey();
         try (InputStream is = object.getObjectContent()) {
             byte[] bytes = IOUtils.toByteArray(is);
             Map<String, String> meta = object.getObjectMetadata().getUserMetadata();
-            return new Downloaded(key, bytes, meta);
+            FileWithMetaData fileWithMetaData = new FileWithMetaData(new SimpleFile(key, bytes), meta);
+            LOG.info("fileWithMetaData: {}", fileWithMetaData);
+            return fileWithMetaData;
         } catch (IOException e) {
             LOG.error("cannot get s3 content", e);
             throw new RuntimeException("could not receive content from s3");

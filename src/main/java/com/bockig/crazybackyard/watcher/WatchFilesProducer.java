@@ -1,4 +1,4 @@
-package com.bockig.crazybackyard.model;
+package com.bockig.crazybackyard.watcher;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

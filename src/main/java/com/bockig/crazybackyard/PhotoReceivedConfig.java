@@ -1,14 +1,12 @@
 package com.bockig.crazybackyard;
 
-import com.bockig.crazybackyard.model.Config;
-import com.bockig.crazybackyard.model.ApplicationProperty;
 import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PhotoReceivedConfig extends Config {
+class PhotoReceivedConfig extends Config {
 
     private static final String CONSUMER_KEY = "CRAZYBACKYARD_TWITTER_CONSUMER_KEY";
     private static final String CONSUMER_SECRET = "CRAZYBACKYARD_TWITTER_CONSUMER_SECRET";

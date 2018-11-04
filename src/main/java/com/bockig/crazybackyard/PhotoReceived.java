@@ -2,6 +2,8 @@ package com.bockig.crazybackyard;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.S3Object;
+import com.bockig.crazybackyard.aws.AmazonS3Downloader;
+import com.bockig.crazybackyard.aws.S3FileReceivedHandler;
 import com.bockig.crazybackyard.model.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,19 +19,13 @@ public class PhotoReceived implements S3FileReceivedHandler {
     @Override
     public void receiveObject(S3Object object, AmazonS3 s3Client) throws IOException, TwitterException {
         PhotoReceivedConfig config = PhotoReceivedConfig.load();
-        Downloaded downloaded = download(object);
+        FileWithMetaData fileWithMetaData = AmazonS3Downloader.download(object);
 
-        if (postDisabledCurrently(config, downloaded.getMeta())) {
+        if (postDisabledCurrently(config, fileWithMetaData.getMeta())) {
             return;
         }
 
-        new TheCrazyBackyardTweeter(config.twitterConfig(), downloaded).post();
-    }
-
-    private Downloaded download(S3Object object) {
-        Downloaded downloaded = new AmazonS3Downloader(object).download();
-        LOG.info("downloaded: {}", downloaded);
-        return downloaded;
+        new TheCrazyBackyardTweeter(config.twitterConfig(), fileWithMetaData).post();
     }
 
     private static boolean postDisabledCurrently(PhotoReceivedConfig globalConfig, Map<String, String> userMetadata) {

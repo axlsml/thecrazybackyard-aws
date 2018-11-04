@@ -1,23 +1,22 @@
 package com.bockig.crazybackyard.model;
 
+import com.bockig.crazybackyard.common.FileProvider;
+import com.bockig.crazybackyard.common.SimpleFile;
 import org.apache.commons.mail.util.MimeMessageParser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.mail.BodyPart;
 import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import java.io.IOException;
-import java.io.InputStream;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class EmailReader implements ImageProvider {
+public class EmailReader implements FileProvider {
 
     private static final Logger LOG = LogManager.getLogger(EmailReader.class);
 
@@ -26,20 +25,8 @@ public class EmailReader implements ImageProvider {
 
     private MimeMessageParser message;
 
-    private EmailReader(MimeMessageParser message) {
+    EmailReader(MimeMessageParser message) {
         this.message = message;
-    }
-
-    public static Optional<EmailReader> create(InputStream source) {
-        Properties props = new Properties();
-        Session mailSession = Session.getDefaultInstance(props, null);
-        try {
-            MimeMessage message = new MimeMessage(mailSession, source);
-            return Optional.of(new EmailReader(new MimeMessageParser(message)));
-        } catch (MessagingException e) {
-            LOG.error("cant create reader", e);
-        }
-        return Optional.empty();
     }
 
     String sender() {
@@ -60,7 +47,7 @@ public class EmailReader implements ImageProvider {
         }
     }
 
-    public List<Image> images() {
+    public List<FileWithMetaData> images() {
         if (isMultipartContent()) {
             return extractImages();
         }
@@ -77,21 +64,26 @@ public class EmailReader implements ImageProvider {
         return false;
     }
 
-    private List<Image> extractImages() {
+    private List<FileWithMetaData> extractImages() {
         try {
             MimeMultipart mimeMultipart = (MimeMultipart) message.getMimeMessage().getContent();
             return IntStream.range(0, mimeMultipart.getCount())
                     .mapToObj(i -> bodyPart(i, mimeMultipart))
                     .filter(Optional::isPresent)
                     .map(Optional::get)
-                    .map(Image::fromBodyPart)
+                    .map(Image::extractFromBodyPart)
                     .filter(Optional::isPresent)
                     .map(Optional::get)
+                    .map(this::withMetaData)
                     .collect(Collectors.toList());
         } catch (Exception e) {
             LOG.error("cannot get multiparts", e);
         }
         return Collections.emptyList();
+    }
+
+    private FileWithMetaData withMetaData(SimpleFile simpleFile) {
+        return new FileWithMetaData(simpleFile, metaData());
     }
 
     private List<EmailText> texts() {
@@ -110,7 +102,7 @@ public class EmailReader implements ImageProvider {
             }
             return new ArrayList<>();
         } catch (MessagingException | IOException e) {
-            LOG.error("cant create texts", e);
+            LOG.error("cant createFromMime texts", e);
             return Collections.emptyList();
         }
     }
@@ -119,7 +111,7 @@ public class EmailReader implements ImageProvider {
         try {
             return Optional.of(mimeMultipart.getBodyPart(i));
         } catch (MessagingException e) {
-            LOG.error("cant create bodypart", e);
+            LOG.error("cant createFromMime bodypart", e);
             return Optional.empty();
         }
     }
@@ -154,7 +146,7 @@ public class EmailReader implements ImageProvider {
                 .findAny();
     }
 
-    public Map<String, String> metaData() {
+    private Map<String, String> metaData() {
         Map<String, String> meta = new HashMap<>();
         meta.put(MetaData.UTC, String.valueOf(timestamp().flatMap(t -> Optional.of(t.toInstant().toEpochMilli())).orElse(0L)));
         meta.put(MetaData.FROM, sender());

@@ -1,6 +1,6 @@
 package com.bockig.crazybackyard;
 
-import com.bockig.crazybackyard.model.S3FileUploader;
+import com.bockig.crazybackyard.aws.S3FileUploader;
 import org.junit.Ignore;
 import org.junit.Test;
 

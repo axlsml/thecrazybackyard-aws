@@ -1,14 +1,14 @@
-package com.bockig.crazybackyard.model;
+package com.bockig.crazybackyard;
 
 import java.util.List;
 
-public abstract class Config {
+abstract class Config {
 
-    protected static final String HOURS = "CRAZYBACKYARD_ACTIVE_HOURS";
+    static final String HOURS = "CRAZYBACKYARD_ACTIVE_HOURS";
 
     private List<ApplicationProperty> properties;
 
-    public Config(List<ApplicationProperty> properties) {
+    Config(List<ApplicationProperty> properties) {
         this.properties = properties;
         failIfIncomplete();
     }
@@ -17,7 +17,7 @@ public abstract class Config {
         properties.forEach(ApplicationProperty::failIfMissing);
     }
 
-    protected String propertyValue(String key) {
+    String propertyValue(String key) {
         return properties.stream()
                 .filter(p -> p.getKey().equals(key))
                 .findAny()

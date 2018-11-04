@@ -1,31 +1,36 @@
 package com.bockig.crazybackyard;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3Object;
-import com.bockig.crazybackyard.model.*;
+import com.bockig.crazybackyard.aws.AmazonS3Downloader;
+import com.bockig.crazybackyard.aws.AmazonS3PushToBucket;
+import com.bockig.crazybackyard.aws.S3FileReceivedHandler;
+import com.bockig.crazybackyard.common.HasInputStream;
+import com.bockig.crazybackyard.model.EmailImageProxy;
+import com.bockig.crazybackyard.model.EmailReaderFactory;
+import com.bockig.crazybackyard.model.FileWithMetaData;
+import com.bockig.crazybackyard.model.MetaData;
 
-import java.io.InputStream;
+import javax.mail.MessagingException;
+import java.io.IOException;
+import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class EmailReceived implements S3FileReceivedHandler {
 
     @Override
-    public void receiveObject(S3Object object, AmazonS3 s3Client) {
-        InputStream emailInputStream = object.getObjectContent();
+    public void receiveObject(S3Object object, AmazonS3 s3Client) throws IOException, MessagingException {
+        HasInputStream email = AmazonS3Downloader.download(object);
 
-        Consumer<EmailReader> processEmail = emailReader -> processEmail(emailReader, s3Client);
-        EmailReader
-                .create(emailInputStream)
-                .ifPresent(processEmail);
+        new EmailImageProxy(EmailReaderFactory.createFromMime(email), createImageConsumer(s3Client)).upload();
     }
 
-    private void processEmail(EmailReader emailReader, AmazonS3 s3Client) {
+    private Consumer<FileWithMetaData> createImageConsumer(AmazonS3 s3Client) {
         EmailReceivedConfig config = EmailReceivedConfig.load();
-        ObjectMetadata metaData = MetaData.create(emailReader.metaData(), config.getHours());
-
-        Consumer<Image> pushToBucket = new AmazonS3PushToBucket(s3Client, config.getTargetBucket(), metaData);
-        new ImageUploader(emailReader, pushToBucket).upload();
+        Function<Map<String, String>, Map<String, String>> addHoursToMetadata =
+                metaData -> MetaData.appendHours(metaData, config.getHours());
+        return new AmazonS3PushToBucket(s3Client, config.getTargetBucket(), addHoursToMetadata);
     }
 
 }

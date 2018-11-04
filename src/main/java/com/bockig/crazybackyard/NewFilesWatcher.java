@@ -1,8 +1,8 @@
 package com.bockig.crazybackyard;
 
 
-import com.bockig.crazybackyard.model.S3FileUploader;
-import com.bockig.crazybackyard.model.WatchFilesProducer;
+import com.bockig.crazybackyard.aws.S3FileUploader;
+import com.bockig.crazybackyard.watcher.WatchFilesProducer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
