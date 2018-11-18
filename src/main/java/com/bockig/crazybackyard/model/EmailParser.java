@@ -1,6 +1,7 @@
 package com.bockig.crazybackyard.model;
 
-import com.bockig.crazybackyard.common.FileProvider;
+import com.bockig.crazybackyard.common.FileWithMetaData;
+import com.bockig.crazybackyard.common.ImageProvider;
 import com.bockig.crazybackyard.common.SimpleFile;
 import org.apache.commons.mail.util.MimeMessageParser;
 import org.apache.logging.log4j.LogManager;
@@ -16,16 +17,16 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class EmailReader implements FileProvider {
+public class EmailParser implements ImageProvider {
 
-    private static final Logger LOG = LogManager.getLogger(EmailReader.class);
+    private static final Logger LOG = LogManager.getLogger(EmailParser.class);
 
     private static final String MULTIPART_MIXED = "multipart/mixed";
     private static final String MULTIPART_ALTERNATIVE = "multipart/alternative";
 
     private MimeMessageParser message;
 
-    EmailReader(MimeMessageParser message) {
+    EmailParser(MimeMessageParser message) {
         this.message = message;
     }
 
@@ -95,7 +96,7 @@ public class EmailReader implements FileProvider {
                         .mapToObj(i -> bodyPart(i, mimeMultipart))
                         .filter(Optional::isPresent)
                         .map(Optional::get)
-                        .map(EmailText::fromBodyPart)
+                        .map(EmailText::extractFromBodyPart)
                         .filter(Optional::isPresent)
                         .map(Optional::get)
                         .collect(Collectors.toList());
@@ -140,7 +141,8 @@ public class EmailReader implements FileProvider {
 
     private Optional<ZonedDateTime> timestampFromText() {
         return texts().stream()
-                .map(EmailText::extractTimestampFromText)
+                .map(EmailText::getText)
+                .map(TimestampExtractor::extract)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .findAny();

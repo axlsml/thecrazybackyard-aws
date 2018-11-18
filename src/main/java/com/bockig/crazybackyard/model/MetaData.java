@@ -27,7 +27,7 @@ public class MetaData {
         return "Hey buddy! #trailcam";
     }
 
-    public static boolean isNowActive(Map<String, String> userMetadata) {
+    static boolean isNowActive(Map<String, String> userMetadata) {
         return Hours.checkActive(userMetadata.get(ACTIVE_HOURS));
     }
 

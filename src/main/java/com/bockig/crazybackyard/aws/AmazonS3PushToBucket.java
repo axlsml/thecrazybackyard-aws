@@ -1,7 +1,7 @@
 package com.bockig.crazybackyard.aws;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.bockig.crazybackyard.model.FileWithMetaData;
+import com.bockig.crazybackyard.common.FileWithMetaData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

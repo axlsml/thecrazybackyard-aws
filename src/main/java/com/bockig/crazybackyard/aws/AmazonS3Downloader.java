@@ -4,7 +4,7 @@ import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.util.IOUtils;
 import com.bockig.crazybackyard.PhotoReceived;
 import com.bockig.crazybackyard.common.SimpleFile;
-import com.bockig.crazybackyard.model.FileWithMetaData;
+import com.bockig.crazybackyard.common.FileWithMetaData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

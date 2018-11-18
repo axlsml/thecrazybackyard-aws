@@ -16,12 +16,12 @@ public class EmailReaderFactory {
 
     }
 
-    public static EmailReader createFromMime(HasInputStream source) throws IOException, MessagingException {
+    public static EmailParser createFromMime(HasInputStream source) throws IOException, MessagingException {
         Properties props = new Properties();
         Session mailSession = Session.getDefaultInstance(props, null);
         try (InputStream is = source.inputStream()) {
             MimeMessage message = new MimeMessage(mailSession, is);
-            return new EmailReader(new MimeMessageParser(message));
+            return new EmailParser(new MimeMessageParser(message));
         }
     }
 

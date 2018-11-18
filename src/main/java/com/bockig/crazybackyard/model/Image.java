@@ -23,7 +23,6 @@ class Image {
             return Optional.empty();
         }
         try (InputStream is = (InputStream) bodyPart.getContent()) {
-
             byte[] bytes = IOUtils.toByteArray(is);
             String filename = bodyPart.getFileName();
             return Optional.of(new SimpleFile(filename, bytes));
@@ -33,7 +32,7 @@ class Image {
         return Optional.empty();
     }
 
-    private static boolean isImage(BodyPart bodyPart) {
+    static boolean isImage(BodyPart bodyPart) {
         try {
             String filename = bodyPart.getFileName();
             return StringUtils.isNotBlank(filename) && filename.toLowerCase().endsWith(JPG_SUFFIX);

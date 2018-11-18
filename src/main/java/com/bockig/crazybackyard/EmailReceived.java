@@ -6,9 +6,9 @@ import com.bockig.crazybackyard.aws.AmazonS3Downloader;
 import com.bockig.crazybackyard.aws.AmazonS3PushToBucket;
 import com.bockig.crazybackyard.aws.S3FileReceivedHandler;
 import com.bockig.crazybackyard.common.HasInputStream;
-import com.bockig.crazybackyard.model.EmailImageProxy;
 import com.bockig.crazybackyard.model.EmailReaderFactory;
-import com.bockig.crazybackyard.model.FileWithMetaData;
+import com.bockig.crazybackyard.common.FileWithMetaData;
+import com.bockig.crazybackyard.model.ImageProxy;
 import com.bockig.crazybackyard.model.MetaData;
 
 import javax.mail.MessagingException;
@@ -23,10 +23,10 @@ public class EmailReceived implements S3FileReceivedHandler {
     public void receiveObject(S3Object object, AmazonS3 s3Client) throws IOException, MessagingException {
         HasInputStream email = AmazonS3Downloader.download(object);
 
-        new EmailImageProxy(EmailReaderFactory.createFromMime(email), createImageConsumer(s3Client)).upload();
+        new ImageProxy(EmailReaderFactory.createFromMime(email), createImageUploader(s3Client)).upload();
     }
 
-    private Consumer<FileWithMetaData> createImageConsumer(AmazonS3 s3Client) {
+    private Consumer<FileWithMetaData> createImageUploader(AmazonS3 s3Client) {
         EmailReceivedConfig config = EmailReceivedConfig.load();
         Function<Map<String, String>, Map<String, String>> addHoursToMetadata =
                 metaData -> MetaData.appendHours(metaData, config.getHours());

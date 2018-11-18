@@ -1,7 +1,4 @@
-package com.bockig.crazybackyard.model;
-
-import com.bockig.crazybackyard.common.FileContent;
-import com.bockig.crazybackyard.common.HasInputStream;
+package com.bockig.crazybackyard.common;
 
 import java.io.InputStream;
 import java.util.Map;
@@ -32,7 +29,7 @@ public class FileWithMetaData implements HasInputStream {
                 '}';
     }
 
-    InputStream createInputStream() {
+    public InputStream createInputStream() {
         return fileContent.inputStream();
     }
 

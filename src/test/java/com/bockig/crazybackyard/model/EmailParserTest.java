@@ -1,5 +1,6 @@
 package com.bockig.crazybackyard.model;
 
+import com.bockig.crazybackyard.common.FileWithMetaData;
 import com.bockig.crazybackyard.common.HasInputStream;
 import org.junit.Assert;
 import org.junit.Test;
@@ -12,11 +13,11 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-public class EmailReaderTest {
+public class EmailParserTest {
 
     @Test
     public void test() throws Exception {
-        EmailReader readerObj = create("src/test/resources/mime/email-without-attachment");
+        EmailParser readerObj = create("src/test/resources/mime/email-without-attachment");
         ZonedDateTime timestamp = ZonedDateTime.of(2018, 9, 4, 23, 1, 0, 0, ZoneId.of("Europe/Berlin"));
 
         Assert.assertEquals("axel@fake.com", readerObj.sender());
@@ -27,7 +28,7 @@ public class EmailReaderTest {
 
     @Test
     public void testAttachment() throws Exception {
-        EmailReader readerObj = create("src/test/resources/mime/email-with-attachment");
+        EmailParser readerObj = create("src/test/resources/mime/email-with-attachment");
         ZonedDateTime timestamp = ZonedDateTime.of(2018, 9, 2, 14, 8, 18, 0, ZoneId.of("Europe/Berlin"));
 
         Assert.assertEquals("lappen@fake.com", readerObj.sender());
@@ -40,7 +41,7 @@ public class EmailReaderTest {
 
     @Test
     public void testAttachmentReal() throws Exception {
-        EmailReader readerObj = create("src/test/resources/mime/q6k3f98015ka9d24kalp1ffi8mifrnfr4d2tfq81");
+        EmailParser readerObj = create("src/test/resources/mime/q6k3f98015ka9d24kalp1ffi8mifrnfr4d2tfq81");
         ZonedDateTime timestamp = ZonedDateTime.of(2018, 9, 6, 19, 29, 46, 0, ZoneId.of("Europe/Berlin"));
 
         Assert.assertEquals("sender@wildcam.com", readerObj.sender());
@@ -51,7 +52,7 @@ public class EmailReaderTest {
         Assert.assertEquals("SYEW0144.JPG", images.get(0).getName());
     }
 
-    private EmailReader create(String filePath) throws IOException, MessagingException {
+    private EmailParser create(String filePath) throws IOException, MessagingException {
         HasInputStream x = () -> {
             try {
                 return new FileInputStream(filePath);

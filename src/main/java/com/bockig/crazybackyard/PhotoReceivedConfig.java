@@ -1,12 +1,13 @@
 package com.bockig.crazybackyard;
 
+import com.bockig.crazybackyard.common.CanBeEnabled;
 import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
 
-class PhotoReceivedConfig extends Config {
+class PhotoReceivedConfig extends Config implements CanBeEnabled {
 
     private static final String CONSUMER_KEY = "CRAZYBACKYARD_TWITTER_CONSUMER_KEY";
     private static final String CONSUMER_SECRET = "CRAZYBACKYARD_TWITTER_CONSUMER_SECRET";
@@ -32,9 +33,8 @@ class PhotoReceivedConfig extends Config {
         return cb.build();
     }
 
-    boolean isEnabled() {
+    public boolean isEnabled() {
         return Boolean.parseBoolean(propertyValue(ENABLED));
     }
-
 
 }
