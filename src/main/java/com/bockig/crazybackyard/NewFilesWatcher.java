@@ -1,7 +1,11 @@
 package com.bockig.crazybackyard;
 
 
-import com.bockig.crazybackyard.aws.S3FileUploader;
+import com.bockig.crazybackyard.aws.AmazonS3PushToBucket;
+import com.bockig.crazybackyard.aws.AmazonS3PushToBucketFactory;
+import com.bockig.crazybackyard.common.FileWithMetaData;
+import com.bockig.crazybackyard.common.FileWithMetaDataFactory;
+import com.bockig.crazybackyard.model.MetaData;
 import com.bockig.crazybackyard.watcher.WatchFilesProducer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,9 +26,9 @@ public class NewFilesWatcher {
 
     private final BlockingQueue<Path> queue = new LinkedBlockingQueue<>();
     private String directoy;
-    private Consumer<Path> fileConsumer;
+    private Consumer<FileWithMetaData> fileConsumer;
 
-    NewFilesWatcher(String directoy, Consumer<Path> fileConsumer) {
+    NewFilesWatcher(String directoy, Consumer<FileWithMetaData> fileConsumer) {
         this.directoy = directoy;
         this.fileConsumer = fileConsumer;
     }
@@ -32,7 +36,8 @@ public class NewFilesWatcher {
     public static void main(String[] args) {
         LOG.info("start watching for files ...");
         NewFilesWatcherConfig config = NewFilesWatcherConfig.load();
-        NewFilesWatcher watcher = new NewFilesWatcher(config.watchDirectory(), new S3FileUploader(config.getTargetBucket(), config.getHours()));
+        AmazonS3PushToBucket pushToBucket = AmazonS3PushToBucketFactory.create(config.getTargetBucket(), meta -> MetaData.appendHours(meta, config.getHours()));
+        NewFilesWatcher watcher = new NewFilesWatcher(config.watchDirectory(), pushToBucket);
         watcher.startWatching();
     }
 
@@ -55,12 +60,16 @@ public class NewFilesWatcher {
                 if (!writtenSuccessfully) {
                     LOG.error("file write timeout - skipping this file");
                 } else {
-                    fileConsumer.accept(path);
+                    fileConsumer.accept(createFile(path));
                 }
             } catch (IOException e) {
                 LOG.error("error consuming new file", e);
             }
         }
+    }
+
+    private FileWithMetaData createFile(Path path) throws IOException {
+        return FileWithMetaDataFactory.create(path);
     }
 
     private boolean waitUntilFileIsWritten(Path path) throws IOException, InterruptedException {

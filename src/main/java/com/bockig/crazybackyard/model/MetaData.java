@@ -31,7 +31,7 @@ public class MetaData {
         return Hours.checkActive(userMetadata.get(ACTIVE_HOURS));
     }
 
-    public static Map<String, String> buildHours(String hours) {
+    private static Map<String, String> buildHours(String hours) {
         Map<String, String> meta = new HashMap<>();
         meta.put(ACTIVE_HOURS, hours);
         return meta;
