@@ -9,6 +9,8 @@ import java.util.Map;
 public class MetaData {
 
     private static DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("hh:mm:ss a");
+    private static final String HASH_TAGS = "#wildkamera #wildlife #nature #hunting #trailcam";
+    private static final String MAIN_TEXT = "Hey buddy!";
 
     static final String UTC = "utc";
     static final String FROM = "from";
@@ -22,9 +24,9 @@ public class MetaData {
         String utc = userMetadata.get(UTC);
         if (utc != null) {
             ZonedDateTime time = ZonedDateTime.ofInstant(Instant.ofEpochMilli(Long.valueOf(utc)), Hours.DEFAULT_ZONE);
-            return String.format("Hey buddy! (%s) #trailcam", time.format(TIME_FORMAT));
+            return String.format("%1$s (%2$s) %3$s", MAIN_TEXT, time.format(TIME_FORMAT), HASH_TAGS);
         }
-        return "Hey buddy! #trailcam";
+        return String.format("%1$s %2$s", MAIN_TEXT, HASH_TAGS);
     }
 
     static boolean isNowActive(Map<String, String> userMetadata) {

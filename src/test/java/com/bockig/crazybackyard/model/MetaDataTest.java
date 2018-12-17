@@ -18,7 +18,7 @@ public class MetaDataTest {
 
     @Test
     public void testNormal() {
-        Assert.assertEquals("Hey buddy! (12:10:25 PM) #trailcam", MetaData.buildStatusText(complete));
-        Assert.assertEquals("Hey buddy! #trailcam", MetaData.buildStatusText(new HashMap<>()));
+        Assert.assertEquals("Hey buddy! (12:10:25 PM) #wildkamera #wildlife #nature #hunting #trailcam", MetaData.buildStatusText(complete));
+        Assert.assertEquals("Hey buddy! #wildkamera #wildlife #nature #hunting #trailcam", MetaData.buildStatusText(new HashMap<>()));
     }
 }
