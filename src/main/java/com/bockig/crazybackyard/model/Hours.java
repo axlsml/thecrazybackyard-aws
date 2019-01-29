@@ -26,12 +26,17 @@ class Hours {
         if (matcher.matches()) {
             LocalTime from = LocalTime.parse(matcher.group(1));
             LocalTime to = LocalTime.parse(matcher.group(2));
+
             LocalTime now = LocalTime.now(clock);
             boolean overMidnight = to.isBefore(from);
-            return overMidnight ? !now.isAfter(to) : (!now.isBefore(from) && !now.isAfter(to));
+            return overMidnight ? !between(now, to, from) : between(now, from, to);
         } else {
             return "open".equals(trimmed);
         }
+    }
+
+    private static boolean between(LocalTime now, LocalTime from, LocalTime to) {
+        return !now.isBefore(from) && !now.isAfter(to);
     }
 
     static boolean checkActive(String hoursString) {

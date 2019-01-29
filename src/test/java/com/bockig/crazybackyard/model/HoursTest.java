@@ -18,6 +18,13 @@ public class HoursTest {
     private static final ZoneId zone = ZoneId.of("Europe/Berlin");
 
     @Test
+    public void testCheckActiveAt11Pm() {
+        Clock clock = Clock.fixed(ZonedDateTime.of(LocalDate.now(), LocalTime.of(22, 39), zone).toInstant(), zone);
+        assert checkActive(clock, "22:00-07:00");
+        assert !checkActive(clock, "23:00-07:00");
+    }
+
+    @Test
     public void testCheckActiveAt12Pm() {
         Clock clock = Clock.fixed(ZonedDateTime.of(LocalDate.now(), LocalTime.of(12, 0), zone).toInstant(), zone);
         assert checkActive(clock, morning);
