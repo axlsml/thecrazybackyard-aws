@@ -22,7 +22,7 @@ import java.util.function.Consumer;
 public class NewFilesWatcher {
 
     private static final Logger LOG = LogManager.getLogger(NewFilesWatcher.class);
-    private static final int MAX_MINUTES = 2;
+    private static final int MAX_MINUTES = 15;
 
     private final BlockingQueue<Path> queue = new LinkedBlockingQueue<>();
     private String directoy;
@@ -77,7 +77,7 @@ public class NewFilesWatcher {
         long size1, size2;
         do {
             size1 = Files.size(path);
-            Thread.sleep(1000);
+            Thread.sleep(10000);
             size2 = Files.size(path);
         } while (size2 != size1 && ZonedDateTime.now().isBefore(abortTimestamp));
         return size2 == size1;
