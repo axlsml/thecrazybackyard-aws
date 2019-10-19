@@ -10,17 +10,24 @@ import org.apache.logging.log4j.Logger;
 import javax.mail.BodyPart;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMultipart;
+import javax.xml.bind.annotation.XmlType;
 import java.io.IOException;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class EmailParser implements ImageProvider {
 
     private static final Logger LOG = LogManager.getLogger(EmailParser.class);
 
+    private static final Pattern TIME_PATTERN = Pattern.compile("[^-]+-[^-]+-(\\d+)/(\\d+) (\\d+):(\\d+)-[^-]+");
     private static final String MULTIPART_MIXED = "multipart/mixed";
     private static final String MULTIPART_ALTERNATIVE = "multipart/alternative";
 
@@ -118,22 +125,38 @@ public class EmailParser implements ImageProvider {
     }
 
     Optional<ZonedDateTime> timestamp() {
-        Optional<ZonedDateTime> fromText = timestampFromText();
-        if (fromText.isPresent()) {
-            return fromText;
+        return Stream.of(timestampFromText(), fromEmailHeader(), fromEmailSubject())
+                .filter(Optional::isPresent)
+                .findAny()
+                .orElse(Optional.empty());
+    }
+
+    private Optional<ZonedDateTime> fromEmailSubject() {
+        Matcher matcher = TIME_PATTERN.matcher(subject());
+        if (matcher.matches()) {
+            Integer month = Integer.valueOf(matcher.group(1));
+            Integer day = Integer.valueOf(matcher.group(2));
+            Integer hour = Integer.valueOf(matcher.group(3));
+            Integer minute = Integer.valueOf(matcher.group(4));
+            return Optional.of(toTimestamp(month, day, hour, minute));
         }
-        return fromEmailHeader();
+        return Optional.empty();
+    }
+
+    private ZonedDateTime toTimestamp(Integer month, Integer day, Integer hour, Integer minute) {
+        int year = ZonedDateTime.now().getYear();
+        return ZonedDateTime.of(year, month, day, hour, minute, 0, 0, Hours.DEFAULT_ZONE);
     }
 
     private Optional<ZonedDateTime> fromEmailHeader() {
         try {
             String[] date = message.getMimeMessage().getHeader("Date");
             ZonedDateTime timestamp = null;
-            if (date.length > 0) {
+            if (date != null && date.length > 0) {
                 timestamp = ZonedDateTime.parse(date[0].replaceAll(" {2}", ""), DateTimeFormatter.RFC_1123_DATE_TIME);
             }
             return Optional.ofNullable(timestamp);
-        } catch (MessagingException e) {
+        } catch (MessagingException| DateTimeParseException e) {
             LOG.error("cant parse timestamp", e);
             return Optional.empty();
         }

@@ -52,6 +52,19 @@ public class EmailParserTest {
         Assert.assertEquals("SYEW0144.JPG", images.get(0).getName());
     }
 
+    @Test
+    public void testAttachmentReal_newCam() throws Exception {
+        EmailParser readerObj = create("src/test/resources/mime/email-with-attachment-cam2");
+        ZonedDateTime timestamp = ZonedDateTime.of(2019, 10, 19, 19, 18, 0, 0, ZoneId.of("Europe/Berlin"));
+
+        Assert.assertEquals("sender@wildcam.com", readerObj.sender());
+        Assert.assertEquals("MG984G-36M-10/19 19:18-IMAG0039", readerObj.subject());
+        Assert.assertTrue(timestamp.isEqual(readerObj.timestamp().get()));
+        List<FileWithMetaData> images = readerObj.images();
+        Assert.assertEquals(1, images.size());
+        Assert.assertEquals("0039.JPG", images.get(0).getName());
+    }
+
     private EmailParser create(String filePath) throws IOException, MessagingException {
         HasInputStream x = () -> {
             try {
